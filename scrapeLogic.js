@@ -22,7 +22,7 @@ const scrapeLogic = async (res,url) => {
     const content = await page.content();
 
     // Print the full page
-    res.send(content);
+    res.send(JSON.stringify(content));
   } catch (e) {
     res.send(`Something went wrong while running Puppeteer: ${e}`);
   } finally {
