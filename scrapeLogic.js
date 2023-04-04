@@ -18,11 +18,13 @@ const scrapeLogic = async (res,url) => {
   try {
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
+    const headers = JSON.stringify(response.headers());
     const content = await page.content();
 
     // Print the full page
-    res.send(JSON.stringify(content));
+    let result = '{"header":'+headers+',"body":'+JSON.stringify(content)+'}';
+    res.send(JSON.parse(result))
   } catch (e) {
     res.send(`Something went wrong while running Puppeteer: ${e}`);
   } finally {
