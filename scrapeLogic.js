@@ -24,7 +24,7 @@ const scrapeLogic = async (res,url) => {
     
     const headers = JSON.stringify(response.headers());
     const content = await page.content();
-    await page.screenshot({path: 'screenshot.png'});
+    // await page.screenshot({path: 'screenshot.png'});
     // Print the full page
     let result = '{"header":'+headers+',"body":'+JSON.stringify(content)+'}';
     res.send(JSON.parse(result))
