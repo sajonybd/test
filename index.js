@@ -1,17 +1,23 @@
 const express = require("express");
 const { scrapeLogic } = require("./scrapeLogic");
+const bodyParser = require('body-parser');
 const app = express();
 
 const PORT = process.env.PORT || 4000;
 
-app.get("/scrape", (req, res) => {
-  let url = req.query.url ? decodeURI(req.query.url) : "https://example.com";
-  let ua = req.query.browser ? decodeURIComponent(req.query.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
-  scrapeLogic(res,url,ua);
-});
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.post('/v1', (req, res) => {
+  let data = req.body;
+  let url = data.url ? decodeURI(data.url) : "https://example.com";
+  let ua = data.browser ? decodeURIComponent(data.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
+  let hd = data.headers ? decodeURI(data.headers) : '{"test":"ok"}';
+  scrapeLogic(res,url,ua,hd);
+})
 
 app.get("/", (req, res) => {
-  res.send("Render Puppeteer server is up and running! v1.0.4");
+  res.send("Render Puppeteer server is up and running! v1.0.5");
 });
 
 app.listen(PORT, () => {
