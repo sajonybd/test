@@ -1,13 +1,19 @@
 const puppeteer = require("puppeteer");
+const useProxy = require('puppeteer-page-proxy');
 require("dotenv").config();
 
-const scrapeLogic = async (res,url,ua,hd) => {
+const scrapeLogic = async (res,url,ua,hd,proxy) => {
+  proxy = proxy.split("@");
+  let auth = proxy[0].replace("http://","");
+  auth = auth.split(":");
+  console.log(auth);
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
+      "--proxy-server="+proxy[1]
     ],
     executablePath:
       process.env.NODE_ENV === "production"
@@ -20,7 +26,7 @@ const scrapeLogic = async (res,url,ua,hd) => {
     const page = await browser.newPage();
     await page.setUserAgent(ua);
     // await page.setExtraHTTPHeaders(hd);
-
+    page.authenticate({username: auth[0], password: auth[1]});
  // enable request interception
 await page.setRequestInterception(true);
 // add header for the navigation requests
@@ -32,7 +38,6 @@ page.on('request', request => {
   }
 
  const header = [hd];
-
   // Add a new header for navigation request.
   const headers = request.headers();
   // headers['X-Just-Must-Be-Request-In-Main-Request'] = 1;
@@ -43,8 +48,12 @@ page.on('request', request => {
   console.log(headers);
   request.continue({ headers });
 });
+
 // navigate to the website
-      const response = await page.goto(url);
+
+    // await useProxy(page, proxy); 
+
+    const response = await page.goto(url);
     
     const headers = JSON.stringify(response.headers());
     const content = await page.content();

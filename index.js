@@ -12,8 +12,9 @@ app.post('/v1', (req, res) => {
   let data = req.body;
   let url = data.url ? decodeURI(data.url) : "https://example.com";
   let ua = data.browser ? decodeURIComponent(data.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
-  let hd = data.headers ? decodeURI(data.headers) : '{"test":"ok"}';
-  scrapeLogic(res,url,ua,hd);
+  let proxy = data.proxy ? decodeURIComponent(data.proxy) : "http://2dda0867aa:92a1d45a93@mobdedi.proxyempire.io:9000";
+  let hd = data.headers ? decodeURI(data.headers) : "X-Powered-By: Cloudflare";
+  scrapeLogic(res,url,ua,hd,proxy);
 })
 
 app.get("/", (req, res) => {
