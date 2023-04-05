@@ -52,16 +52,29 @@ page.on('request', request => {
     const [key, value] = news[i].split(': ');
     headers[key] = value;
   }
-  console.log(headers);
+  // console.log(headers);
   request.continue({ headers });
 });
 
 // navigate to the website
 
     // await useProxy(page, proxy); 
-    const cookies = [
-      {name: 'cookie1', value: 'val1', domain: 'safiulalom.com'},
-    ];
+
+    
+let domain = "safiulalom.com";
+let data = {};
+let cookies = [];
+if (cookie) {
+  cookie.split(/\s*;\s*/).forEach(function(pair) {
+    pair = pair.split(/\s*=\s*/);
+    var name = decodeURIComponent(pair[0]);
+    var value = decodeURIComponent(pair.splice(1).join('='));
+    data["name"] = name;
+    data["value"] = value;
+    data["domain"] = domain;
+    cookies.push(data);
+  });
+}
     await page.setCookie(...cookies);
     const response = await page.goto(url);
 
