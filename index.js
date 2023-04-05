@@ -5,8 +5,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.get("/scrape", (req, res) => {
-  let url = req.query.url ? req.query.url : "https://example.com";
-  scrapeLogic(res,url);
+  let url = req.query.url ? decodeURI(req.query.url) : "https://example.com";
+  let ua = req.query.browser ? decodeURIComponent(req.query.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
+  scrapeLogic(res,url,ua);
 });
 
 app.get("/", (req, res) => {

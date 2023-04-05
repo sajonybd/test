@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const scrapeLogic = async (res,url) => {
+const scrapeLogic = async (res,url,ua) => {
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
@@ -19,7 +19,7 @@ const scrapeLogic = async (res,url) => {
   try {
     const page = await browser.newPage();
 
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36');
+    await page.setUserAgent(ua);
     const response = await page.goto(url);
     
     const headers = JSON.stringify(response.headers());
