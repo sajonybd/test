@@ -12,9 +12,10 @@ app.post('/v1', (req, res) => {
   let data = req.body;
   let url = data.url ? decodeURI(data.url) : "https://example.com";
   let ua = data.browser ? decodeURIComponent(data.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
-  let proxy = data.proxy ? decodeURIComponent(data.proxy) : "http://2dda0867aa:92a1d45a93@mobdedi.proxyempire.io:9000";
-  let hd = data.headers ? decodeURI(data.headers) : "X-Powered-By: Cloudflare";
-  scrapeLogic(res,url,ua,hd,proxy);
+  let proxy = data.proxy ? decodeURIComponent(data.proxy) : "";
+  let header = data.headers ? JSON.stringify(data.headers) : '["X-Powered-By: Cloudflare"]';
+  let cookie = data.cookie ? decodeURIComponent(data.cookie) : '';
+  scrapeLogic(res,url,ua,header,proxy,cookie);
 })
 
 app.get("/", (req, res) => {
