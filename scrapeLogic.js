@@ -24,7 +24,7 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie) => {
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
-    headless: true
+    headless: false
   });
   // const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
   try {
@@ -60,12 +60,13 @@ page.on('request', request => {
 
     // await useProxy(page, proxy); 
 
-    
-let domain = "safiulalom.com";
-let data = {};
+const urls = new URL(url);   
+let domain = urls.hostname;
 let cookies = [];
+cookie = cookie.lastIndexOf(";") == cookie.length - 1 ?  cookie.substring(0, cookie.length -1 ) : cookie;
 if (cookie) {
   cookie.split(/\s*;\s*/).forEach(function(pair) {
+    let data = {};
     pair = pair.split(/\s*=\s*/);
     var name = decodeURIComponent(pair[0]);
     var value = decodeURIComponent(pair.splice(1).join('='));
@@ -73,8 +74,11 @@ if (cookie) {
     data["value"] = value;
     data["domain"] = domain;
     cookies.push(data);
-  });
+  }
+  );
 }
+
+console.log(JSON.stringify(cookies));
     await page.setCookie(...cookies);
     const response = await page.goto(url);
 
