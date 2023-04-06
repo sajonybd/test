@@ -8,6 +8,14 @@ const PORT = process.env.PORT || 4000;
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use(function(err, req, res, next) {
+  if (err instanceof SyntaxError && err.status === 400) {
+    console.error('Bad JSON');
+    res.send('{"error":"Invalid Request Data"}');
+  }
+});
+
+
 app.post('/v1', (req, res) => {
   let data = req.body;
   let url = data.url ? decodeURI(data.url) : "https://example.com";
