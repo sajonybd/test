@@ -44,8 +44,7 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
     defaultViewport: {
           width:1920,
           height:1080
-        },
-    headless: false
+        }
   });
 
   try {
