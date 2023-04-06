@@ -1,8 +1,24 @@
 const puppeteer = require("puppeteer");
-const useProxy = require('puppeteer-page-proxy');
 require("dotenv").config();
 
 const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
+  function isJson(item) {
+    let value = typeof item !== "string" ? JSON.stringify(item) : item;
+    try {
+      value = JSON.parse(value);
+    } catch (e) {
+      return false;
+    }
+  
+    return typeof value === "object" && value !== null;
+  }
+
+  if (method !== 'GET') {
+    if (isJson(postData)) {
+      postData = decodeURIComponent(postData);
+    }
+  }
+
   proxy = pp.split("@");
   let auth = proxy[0].replace("http://","");
   auth = auth.split(":");
@@ -58,7 +74,8 @@ page.on('request', request => {
     headers[key] = value;
   }
   
-  let data = {};
+let data = {};
+
 if (method !== "GET") {
     data['method'] = method;
     data['postData'] = postData;
