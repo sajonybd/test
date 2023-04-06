@@ -44,7 +44,8 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
     defaultViewport: {
           width:1920,
           height:1080
-        }
+        },
+    headless: false
   });
 
   try {
@@ -108,11 +109,11 @@ if (cookie) {
     await page.setCookie(...cookies);
    
     const response = await page.goto(url, {waitUntil: 'load', timeout: 0});
-    const headersData = JSON.stringify(response.headers());
+    const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
     let content = await page.content();
     
-    if (headersData.indexOf("application/json") > 0) {
+    if (headers.indexOf("application/json") > 0 || header.indexOf("application/json") > 0) {
       try {
         content = await page.evaluate(() => document.querySelector('pre').innerText);
       } catch (e) {
@@ -120,7 +121,7 @@ if (cookie) {
       }
     }
     
-    let result = '{"statusCode":'+statusCode+',"headers":'+headersData+',"body":'+JSON.stringify(content)+'}';
+    let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
     res.send(JSON.parse(result))
   } catch (e) {
     let result = '{"error":"'+e+'","body":""}';
