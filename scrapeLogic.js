@@ -18,12 +18,17 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie) => {
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
+      "--window-size=1920,1080",
       server
     ],
     executablePath:
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath()
+        : puppeteer.executablePath(),
+    defaultViewport: {
+          width:1920,
+          height:1080
+        }
   });
   // const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
   try {
@@ -43,25 +48,21 @@ page.on('request', request => {
     return;
   }
   let news = JSON.parse(header);
-//  console.log(news);
-  // Add a new header for navigation request.
+
   const headers = request.headers();
-  // headers['X-Just-Must-Be-Request-In-Main-Request'] = 1;
+
   for(let i = 0; i < news.length; i++) {
     const [key, value] = news[i].split(': ');
     headers[key] = value;
   }
-  // console.log(headers);
+
   request.continue({ headers });
 });
 
-// navigate to the website
-
-    // await useProxy(page, proxy); 
-
-const urls = new URL(url);   
+const urls = new URL(url);  
 let domain = urls.hostname;
 let cookies = [];
+
 cookie = cookie.lastIndexOf(";") == cookie.length - 1 ?  cookie.substring(0, cookie.length -1 ) : cookie;
 if (cookie) {
   cookie.split(/\s*;\s*/).forEach(function(pair) {
@@ -77,18 +78,17 @@ if (cookie) {
   );
 }
 
-console.log(JSON.stringify(cookies));
     await page.setCookie(...cookies);
-    const response = await page.goto(url);
-
+   
+    const response = await page.goto(url, {waitUntil: 'load', timeout: 0});
     const headers = JSON.stringify(response.headers());
+    const statusCode = Number(response.status());
     const content = await page.content();
-    // await page.screenshot({path: 'screenshot.png'});
-    // Print the full page
-    let result = '{"header":'+headers+',"body":'+JSON.stringify(content)+'}';
+    let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
     res.send(JSON.parse(result))
   } catch (e) {
-    res.send(`Something went wrong while running Puppeteer: ${e}`);
+    let result = '{"error":"'+e+'","body":""}';
+    res.send(JSON.parse(result))
   } finally {
     await browser.close();
   }

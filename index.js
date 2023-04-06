@@ -19,7 +19,7 @@ app.post('/v1', (req, res) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Render Puppeteer server is up and running! v1.0.5");
+  res.send("Render Puppeteer server is up and running! v1.0.6");
 });
 
 app.listen(PORT, () => {
