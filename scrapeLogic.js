@@ -50,7 +50,6 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
   try {
     const page = await browser.newPage();
     await page.setUserAgent(ua);
-    // await page.setExtraHTTPHeaders(hd);
     if (pp) {
     page.authenticate({username: auth[0], password: auth[1]});
     }
@@ -113,7 +112,7 @@ if (cookie) {
     const statusCode = Number(response.status());
     let content = await page.content();
     
-    if (header.indexOf("application/json") > 0) {
+    if (headersData.indexOf("application/json") > 0) {
       try {
         content = await page.evaluate(() => document.querySelector('pre').innerText);
       } catch (e) {
