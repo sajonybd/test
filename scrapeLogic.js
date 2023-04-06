@@ -97,7 +97,11 @@ if (cookie) {
     let content = await page.content();
     
     if (header.indexOf("application/json") > 0) {
-      content = await page.evaluate(() => document.querySelector('pre').innerText);
+      try {
+        content = await page.evaluate(() => document.querySelector('pre').innerText);
+      } catch (e) {
+        console.log(e);
+      }
     }
     
     let result = '{"statusCode":'+statusCode+',"headers":'+headersData+',"body":'+JSON.stringify(content)+'}';

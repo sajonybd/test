@@ -26,8 +26,8 @@ app.post('/v1', (req, res) => {
   let postData = "";
   if (method !== 'GET') {
     postData = data.data;
-    if (postData == 'null') {
-      postData = null;
+    if (postData == 'null' || postData == '{}') {
+      postData = postData.split('"').join('');
     } else if (postData !== null) {
       try {
         postData = JSON.stringify(postData);
