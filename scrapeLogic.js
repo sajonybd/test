@@ -23,8 +23,7 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie) => {
     executablePath:
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-    headless: false
+        : puppeteer.executablePath()
   });
   // const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
   try {
