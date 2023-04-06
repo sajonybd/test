@@ -32,6 +32,7 @@ app.post('/v1', (req, res) => {
       try {
         postData = JSON.stringify(postData);
       } catch (e) {
+        postData = encodeURIComponent(postData);
         console.log(e);
       }
     } else {
@@ -45,7 +46,7 @@ app.post('/v1', (req, res) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Scrape Master API v1.0.8! System Up & Running ;)");
+  res.send("Welcome to Scrape Master v1.0.9!");
 });
 
 app.listen(PORT, () => {
