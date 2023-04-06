@@ -58,7 +58,6 @@ page.on('request', request => {
 
   let data = {};
 
-
 if (method !== "GET") {
     data['method'] = method;
     data['postData'] = postData;
@@ -79,8 +78,8 @@ if (cookie) {
   cookie.split(/\s*;\s*/).forEach(function(pair) {
     let data = {};
     pair = pair.split(/\s*=\s*/);
-    var name = decodeURIComponent(pair[0]);
-    var value = decodeURIComponent(pair.splice(1).join('='));
+    var name = pair[0];
+    var value = pair.splice(1).join('=');
     data["name"] = name;
     data["value"] = value;
     data["domain"] = domain;
