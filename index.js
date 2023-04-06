@@ -17,6 +17,7 @@ app.use(function(err, req, res, next) {
 
 
 app.post('/v1', (req, res) => {
+  res.setHeader("Content-Type", "application/json");
   let data = req.body;
   let url = data.url ? decodeURI(data.url) : "https://example.com";
   let ua = data.browser ? decodeURIComponent(data.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
