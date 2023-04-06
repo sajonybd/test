@@ -30,7 +30,7 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
           height:1080
         }
   });
-  // const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
   try {
     const page = await browser.newPage();
     await page.setUserAgent(ua);
@@ -38,6 +38,7 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
     if (pp) {
     page.authenticate({username: auth[0], password: auth[1]});
     }
+
  // enable request interception
 await page.setRequestInterception(true);
 // add header for the navigation requests
@@ -47,6 +48,7 @@ page.on('request', request => {
     request.continue();
     return;
   }
+
   let news = JSON.parse(header);
 
   const headers = request.headers();
@@ -55,9 +57,8 @@ page.on('request', request => {
     const [key, value] = news[i].split(': ');
     headers[key] = value;
   }
-
+  
   let data = {};
-console.log(postData);
 if (method !== "GET") {
     data['method'] = method;
     data['postData'] = postData;
@@ -91,10 +92,15 @@ if (cookie) {
     await page.setCookie(...cookies);
    
     const response = await page.goto(url, {waitUntil: 'load', timeout: 0});
-    const headers = JSON.stringify(response.headers());
+    const headersData = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
-    const content = await page.content();
-    let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
+    let content = await page.content();
+    
+    if (header.indexOf("application/json") > 0) {
+      content = await page.evaluate(() => document.querySelector('pre').innerText);
+    }
+    
+    let result = '{"statusCode":'+statusCode+',"headers":'+headersData+',"body":'+JSON.stringify(content)+'}';
     res.send(JSON.parse(result))
   } catch (e) {
     let result = '{"error":"'+e+'","body":""}';
