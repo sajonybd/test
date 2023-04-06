@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const useProxy = require('puppeteer-page-proxy');
 require("dotenv").config();
 
-const scrapeLogic = async (res,url,ua,header,pp,cookie) => {
+const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
   proxy = pp.split("@");
   let auth = proxy[0].replace("http://","");
   auth = auth.split(":");
@@ -56,7 +56,17 @@ page.on('request', request => {
     headers[key] = value;
   }
 
-  request.continue({ headers });
+  let data = {};
+
+if (method !== "GET") {
+    data['method'] = method;
+    data['postData'] = postData;
+}
+
+let newReq = Object.assign(data,{headers});
+
+request.continue(newReq);
+
 });
 
 const urls = new URL(url);  
