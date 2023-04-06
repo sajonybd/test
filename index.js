@@ -24,19 +24,24 @@ app.post('/v1', (req, res) => {
   let proxy = data.proxy ? decodeURIComponent(data.proxy) : "";
   let method = data.method ? data.method.toUpperCase() : "GET";
   let postData = "";
+
+  function isJson(item) {
+    let value = typeof item !== "string" ? JSON.stringify(item) : item;
+    try {
+      value = JSON.parse(value);
+    } catch (e) {
+      return false;
+    }
+  
+    return typeof value === "object" && value !== null;
+  }
+
   if (method !== 'GET') {
     postData = data.data;
     if (postData == 'null' || postData == '{}') {
       postData = postData.split('"').join('');
-    } else if (postData !== null) {
-      try {
-        postData = JSON.stringify(postData);
-      } catch (e) {
-        postData = encodeURIComponent(postData);
-        console.log(e);
-      }
-    } else {
-      postData = 'null';
+    } else if (isJson(postData)) {
+      postData = JSON.stringify(postData);
     }
   }
 
