@@ -57,7 +57,7 @@ page.on('request', request => {
   }
 
   let data = {};
-
+console.log(postData);
 if (method !== "GET") {
     data['method'] = method;
     data['postData'] = postData;

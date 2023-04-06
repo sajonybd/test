@@ -23,7 +23,20 @@ app.post('/v1', (req, res) => {
   let ua = data.browser ? decodeURIComponent(data.browser) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
   let proxy = data.proxy ? decodeURIComponent(data.proxy) : "";
   let method = data.method ? data.method.toUpperCase() : "GET";
-  let postData = toString(data.data) ? JSON.stringify(data.data) : {};
+  let postData = "";
+  if (method !== 'GET') {
+    postData = data.data;
+    if (postData !== null) {
+      try {
+        postData = JSON.stringify(postData);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      postData = 'null';
+    }
+  }
+
   let header = data.headers ? JSON.stringify(data.headers) : '["X-Powered-By: Cloudflare"]';
   let cookie = data.cookie ? data.cookie : '';
   scrapeLogic(res,url,ua,header,proxy,cookie,method,postData);
