@@ -29,7 +29,7 @@ app.post('/v1', (req, res) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Welcome to Scrape Master v1.1.0!");
+  res.send("Welcome to Scrape Master v1.1.1!");
 });
 
 app.listen(PORT, () => {
