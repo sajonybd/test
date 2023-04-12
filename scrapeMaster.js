@@ -125,8 +125,8 @@ url = checkURL(url);
       }
 
     });
-    const response = await page.goto(url, {waitUntil: 'load', timeout: 0});
-    let content = await page.content();
+    const response = await page.goto(url);
+    let content = await response.text();
     
     if (headers.indexOf("application/json") > 0 || header.indexOf("application/json") > 0) {
       try {

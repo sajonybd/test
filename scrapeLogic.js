@@ -107,10 +107,10 @@ if (cookie) {
 
     await page.setCookie(...cookies);
    
-    const response = await page.goto(url, {waitUntil: 'load', timeout: 0});
+    const response = await page.goto(url);
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
-    let content = await page.content();
+    let content = await response.text();
     
     if (headers.indexOf("application/json") > 0 || header.indexOf("application/json") > 0) {
       try {
