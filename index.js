@@ -37,12 +37,13 @@ app.post('/v1', (req, res) => {
 })
 
 app.get("/v2", (req, res) => {
-  res.send("Scrape Master v1 Running!");
+  res.send("Scrape Master v2 Running!");
 });
 
 app.post('/v2', (req, res) => {
   res.setHeader("Content-Type", "application/json");
   let data = req.body;
+  let url = data.url ? decodeURI(data.url) : "https://example.com";
   let headers = data.headers ? data.headers : {};
   let ua = headers['user-agent'] ? decodeURIComponent(headers['user-agent']) : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
   let pp = data.proxy ? decodeURIComponent(data.proxy) : "";
