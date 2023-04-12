@@ -104,6 +104,15 @@ if (cookie) {
   );
 }
 
+function checkURL(url) {
+    if (url.charAt(url.length - 1) == "/") {
+      url = url.substr(0, url.length - 1);
+    }
+  return url;
+}
+
+url = checkURL(url);
+
     await page.setCookie(...cookies);
     let headers, statusCode;
     page.on('response', async (resp) => {
