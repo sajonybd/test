@@ -1,6 +1,6 @@
 const express = require("express");
 const { scrapeLogic } = require("./scrapeLogic");
-const { scrapeLogic } = require("./scrapeLogic");
+const { scrapeMaster } = require("./scrapeMaster");
 const bodyParser = require('body-parser');
 const app = express();
 
