@@ -139,7 +139,7 @@ url = checkURL(url);
     let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
     res.send(JSON.parse(result))
   } catch (e) {
-    let result = '{"error":"'+decodeURIComponent(e)+'","body":""}';
+    let result = '{"error":"'+JSON.stringify(e)+'","body":""}';
     res.send(JSON.parse(result))
   } finally {
     await browser.close();
