@@ -15,7 +15,11 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
 
   if (method !== 'GET') {
     if (isJson(postData)) {
-      postData = JSON.stringify(postData);
+      try {
+        postData = decodeURIComponent(postData);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
