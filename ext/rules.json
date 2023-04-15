@@ -1,0 +1,16 @@
+[
+  {
+    "id" : 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        { "header": "content-type", "operation": "remove" }
+      ]
+    },
+    "condition" : {
+      "urlFilter" : "Export",
+      "resourceTypes" : ["script", "main_frame", "sub_frame"]
+    }
+  }
+]

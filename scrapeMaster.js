@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 require("dotenv").config();
 
 const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
+  const pathToExtension = require('path').join(__dirname, 'ext');
   function isJson(item) {
     let value = typeof item !== "string" ? JSON.stringify(item) : item;
     try {
@@ -34,11 +35,13 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
   
   const browser = await puppeteer.launch({
     args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-      "--window-size=1920,1080",
+      `--disable-setuid-sandbox`,
+      `--no-sandbox`,
+      `--single-process`,
+      `--no-zygote`,
+      `--window-size=1920,1080`,
+      `--disable-extensions-except=${pathToExtension}`,
+      `--load-extension=${pathToExtension}`,
       server
     ],
     executablePath:
