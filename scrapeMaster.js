@@ -121,8 +121,6 @@ if (cookie) {
 
     await page.setCookie(...cookies);
     const response = await page.goto(url);
-    for (const r of response.request().redirectChain())
-    console.log(r.method() + ' ' + r.response().status() + ' ' + r.url());
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
     let content = await response.text();
