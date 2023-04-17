@@ -51,7 +51,8 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
     defaultViewport: {
           width:1920,
           height:1080
-        }
+        },
+    headless: false
   });
 
   try {
@@ -62,13 +63,20 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
     }
 
  // enable request interception
+ let lastRedirectResponse = undefined;
 await page.setRequestInterception(true);
+
 // add header for the navigation requests
 page.on('request', request => {
   // Do nothing in case of non-navigation requests.
   if (!request.isNavigationRequest()) {
     request.continue();
     return;
+  }
+
+  if (['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1) {
+        request.abort();
+        return;
   }
 
   let newHeaders = JSON.parse(header);
@@ -112,14 +120,19 @@ if (cookie) {
 }
 
     await page.setCookie(...cookies);
-   
     const response = await page.goto(url);
+    for (const r of response.request().redirectChain())
+    console.log(r.method() + ' ' + r.response().status() + ' ' + r.url());
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
     let content = await response.text();
-   
+    const finalUrl = response.url();
     let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
-    res.send(JSON.parse(result))
+    result = JSON.parse(result);
+    if (finalUrl) {
+      result['finalUrl'] =  finalUrl;
+    }
+    res.send(result);
   } catch (e) {
     let result = `{"error":${JSON.stringify(e)},"body":""}`;
     res.send(JSON.parse(result))

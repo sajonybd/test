@@ -5,11 +5,27 @@
     "action": {
       "type": "modifyHeaders",
       "responseHeaders": [
-        { "header": "content-type", "operation": "remove" }
+        { "header": "content-type", "operation": "remove" },
+        { "header": "content-disposition", "operation": "remove" }
       ]
     },
     "condition" : {
-      "urlFilter" : "Export",
+      "urlFilter" : "xport",
+      "resourceTypes" : ["script", "main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id" : 2,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        { "header": "content-type", "operation": "remove" },
+        { "header": "content-disposition", "operation": "remove" }
+      ]
+    },
+    "condition" : {
+      "urlFilter" : "csv",
       "resourceTypes" : ["script", "main_frame", "sub_frame"]
     }
   }
