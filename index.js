@@ -34,8 +34,6 @@ app.post('/v2', (req, res) => {
   let header = headers ? JSON.stringify(headers) : '{"X-Powered-By": "Cloudflare"}';
   let proxy = data.proxy ? decodeURIComponent(data.proxy) : "";
   let method = data.method ? data.method.toUpperCase() : "GET";
-  console.log(url);
-  console.log(JSON.stringify(data.data));
   scrapeMaster(res,url,ua,header,proxy,cookie,method,data.data);
 })
 
