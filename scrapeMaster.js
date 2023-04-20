@@ -56,7 +56,9 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
 
   try {
     const page = await browser.newPage();
-    await page.setUserAgent(ua);
+    if (ua) {
+      await page.setUserAgent(ua);
+    }
     if (pp) {
     page.authenticate({username: auth[0], password: auth[1]});
     }
