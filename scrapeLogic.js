@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
+const scrapeMasterv2 = async (res,url,ua,header,pp,cookie,method,postData) => {
   function isJson(item) {
     let value = typeof item !== "string" ? JSON.stringify(item) : item;
     try {
@@ -15,7 +15,11 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
 
   if (method !== 'GET') {
     if (isJson(postData)) {
-      postData = decodeURIComponent(postData);
+      try {
+        postData = decodeURIComponent(postData);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
@@ -30,11 +34,11 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
   
   const browser = await puppeteer.launch({
     args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-      "--window-size=1920,1080",
+      `--disable-setuid-sandbox`,
+      `--no-sandbox`,
+      `--single-process`,
+      `--no-zygote`,
+      `--window-size=1920,1080`,
       server
     ],
     executablePath:
@@ -49,13 +53,17 @@ const scrapeLogic = async (res,url,ua,header,pp,cookie,method,postData) => {
 
   try {
     const page = await browser.newPage();
-    await page.setUserAgent(ua);
+    if (ua) {
+      await page.setUserAgent(ua);
+    }
     if (pp) {
     page.authenticate({username: auth[0], password: auth[1]});
     }
 
  // enable request interception
+ let lastRedirectResponse = undefined;
 await page.setRequestInterception(true);
+
 // add header for the navigation requests
 page.on('request', request => {
   // Do nothing in case of non-navigation requests.
@@ -64,12 +72,16 @@ page.on('request', request => {
     return;
   }
 
-  let news = JSON.parse(header);
+  if (['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1) {
+        request.abort();
+        return;
+  }
+
+  let newHeaders = JSON.parse(header);
 
   const headers = request.headers();
 
-  for(let i = 0; i < news.length; i++) {
-    const [key, value] = news[i].split(': ');
+  for (const [key, value] of Object.entries(newHeaders)) {
     headers[key] = value;
   }
   
@@ -106,22 +118,17 @@ if (cookie) {
 }
 
     await page.setCookie(...cookies);
-   
     const response = await page.goto(url);
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
     let content = await response.text();
-    
-    if (headers.indexOf("application/json") > 0 || header.indexOf("application/json") > 0) {
-      try {
-        content = await page.evaluate(() => document.querySelector('pre').innerText);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    
+    const finalUrl = response.url();
     let result = '{"statusCode":'+statusCode+',"headers":'+headers+',"body":'+JSON.stringify(content)+'}';
-    res.send(JSON.parse(result))
+    result = JSON.parse(result);
+    if (finalUrl) {
+      result['finalUrl'] =  finalUrl;
+    }
+    res.send(result);
   } catch (e) {
     let result = `{"error":${JSON.stringify(e)},"body":""}`;
     res.send(JSON.parse(result))
@@ -130,4 +137,4 @@ if (cookie) {
   }
 };
 
-module.exports = { scrapeLogic };
+module.exports = { scrapeMasterv2 };

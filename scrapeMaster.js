@@ -51,7 +51,8 @@ const scrapeMaster = async (res,url,ua,header,pp,cookie,method,postData) => {
     defaultViewport: {
           width:1920,
           height:1080
-        }
+        },
+    headless: false
   });
 
   try {
@@ -135,6 +136,7 @@ if (cookie) {
   } catch (e) {
     let result = `{"error":${JSON.stringify(e)},"body":""}`;
     res.send(JSON.parse(result))
+    // process.kill();
   } finally {
     await browser.close();
   }
