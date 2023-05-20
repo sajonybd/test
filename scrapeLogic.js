@@ -118,6 +118,7 @@ if (cookie) {
 }
 
     await page.setCookie(...cookies);
+    page.setDefaultNavigationTimeout(0);
     const response = await page.goto(url);
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
