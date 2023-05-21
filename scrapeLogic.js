@@ -49,7 +49,7 @@ const scrapeMasterv2 = async (res,url,ua,header,pp,cookie,method,postData) => {
           width:1920,
           height:1080
         },
-    headless: "new"
+    headless: true
   });
 
   try {
