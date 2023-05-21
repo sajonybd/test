@@ -48,7 +48,8 @@ const scrapeMasterv2 = async (res,url,ua,header,pp,cookie,method,postData) => {
     defaultViewport: {
           width:1920,
           height:1080
-        }
+        },
+    headless: "new"
   });
 
   try {
@@ -118,7 +119,6 @@ if (cookie) {
 }
 
     await page.setCookie(...cookies);
-    page.setDefaultNavigationTimeout(0);
     const response = await page.goto(url);
     const headers = JSON.stringify(response.headers());
     const statusCode = Number(response.status());
